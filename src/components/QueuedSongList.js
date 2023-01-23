@@ -1,15 +1,17 @@
-import { Avatar, IconButton, makeStyles, Typography } from "@material-ui/core";
+import { Avatar, IconButton, makeStyles, Typography, useMediaQuery } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import React from "react";
 
 function QueuedSongList() {
+  const greaterThanMd = useMediaQuery(theme => theme.breakpoints.up('md'));
+  
   const song = {
     title: 'Digital Love',
     artist: 'Daft Punk',
     thumbnail: 'https://i.scdn.co/image/ab67616d0000b273b33d46dfa2635a47eebf63b2'
   }
   
-  return (
+  return greaterThanMd && (
     <div style={{margin: '10px 0'}}>
       <Typography color="textSecondary" variant="button">
         QUEUE (5)

@@ -1,16 +1,12 @@
+import { useQuery } from "@apollo/client";
 import { Card, CardActions, CardContent, CardMedia, CircularProgress, IconButton, makeStyles, Typography } from "@material-ui/core";
 import { PlayArrow, Save } from "@material-ui/icons";
 import React from "react";
+import { GET_SONGS } from "../graphql/queries";
 
 function SongList() {
-  let loading = false;
-
-  const song = {
-    title: 'Digital Love',
-    artist: 'Daft Punk',
-    thumbnail: 'https://i.scdn.co/image/ab67616d0000b273b33d46dfa2635a47eebf63b2'
-  }
-  
+  const { data, loading, error } = useQuery(GET_SONGS)
+   
   if(loading) {
     return (
       <div style={{
@@ -24,9 +20,15 @@ function SongList() {
     )
   }
 
-  return <div>{Array.from({ length: 10 }, () => song).map((song, i) => (
-    <Song key={i} song={song} />
-  ))}</div>;
+  if(error) return <div>Error fetching songs</div>
+
+  return (
+    <div>
+      {data.songs.map(song => (
+        <Song key={song.id} song={song}/>
+      ))}
+    </div>
+  )
 }
 
 const useStyles = makeStyles(theme => ({

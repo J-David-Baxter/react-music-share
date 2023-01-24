@@ -26,11 +26,11 @@ const client = new ApolloClient({
 })
 
 ReactDOM.render(
-  <MuiThemeProvider theme={theme}>
   <ApolloProvider client={client}>
+  <MuiThemeProvider theme={theme}>
     <CssBaseline />
     <App />
-  </ApolloProvider>
-  </MuiThemeProvider>,
+  </MuiThemeProvider>
+  </ApolloProvider>,
   document.getElementById("root")
 );

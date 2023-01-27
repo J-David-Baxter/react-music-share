@@ -115,6 +115,10 @@ function AddSong() {
       })
     })
   }
+
+  function handleError(field) {
+    return error?.graphQLErrors[0]?.extensions?.path.includes(field);
+  }
   
   const { thumbnail, title, artist } = song;
   return (
@@ -138,6 +142,8 @@ function AddSong() {
             name="title"
             label="Title"
             fullWidth
+            error={handleError('title')}
+            helperText={handleError('title') && 'Fill out field'}
           />
           <TextField 
             onChange={handleChangeSong}
@@ -146,6 +152,8 @@ function AddSong() {
             name="artist"
             label="Artist"
             fullWidth
+            error={handleError('artist')}
+            helperText={handleError('artist') && 'Fill out field'}
           />
           <TextField 
             onChange={handleChangeSong}
@@ -154,6 +162,8 @@ function AddSong() {
             name="thumbnail"
             label="Thumbnail"
             fullWidth
+            error={handleError('thumbnail')}
+            helperText={handleError('thumbnail') && 'Fill out field'}
           />
         </DialogContent>
         <DialogActions>

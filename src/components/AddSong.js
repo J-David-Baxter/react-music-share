@@ -4,6 +4,8 @@ import ReactPlayer from "react-player";
 import SoundCloudPlayer from "react-player/soundcloud";
 import YouTubePlayer from "react-player/youtube";
 import React, { useEffect, useState } from "react";
+import { useMutation } from "@apollo/client";
+import { ADD_SONG } from "../graphql/mutations";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -24,17 +26,20 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+const DEFAULT_SONG = {
+  duration: 0,
+  title: '',
+  artist: '',
+  thumbnail: '',
+};
+
 function AddSong() {
+  const [addSong, { error }] = useMutation(ADD_SONG);
   const classes = useStyles();
   const [dialog, setDialog] = useState(false);
   const [url, setUrl] = useState('');
   const [playable, setPlayable] = useState(false);
-  const [song, setSong] = useState({
-    duration: 0,
-    title: '',
-    artist: '',
-    tumbnail: '',
-  })
+  const [song, setSong] = useState(DEFAULT_SONG);
 
   useEffect(() => {
     const isPlayable = SoundCloudPlayer.canPlay(url) || YouTubePlayer.canPlay(url);
@@ -48,6 +53,26 @@ function AddSong() {
       [name]: value
     }))
   }
+
+  async function handleAddSong() {
+  try {
+    const { duration, title, artist, thumbnail, url } = song;
+    await addSong({
+      variables: {
+        duration: duration > 0 ? duration : null,
+        title: title.length > 0 ? title : null,
+        artist: artist.length > 0 ? artist : null,
+        thumbnail: thumbnail.length > 0 ? thumbnail : null,
+        url: url.length > 0 ? url : null,
+      }
+    })
+    handleCloseDialog();
+    setSong(DEFAULT_SONG);
+    setUrl('');
+  } catch (error) {
+    console.error("Error adding song", error);
+  } 
+}
 
   function handleCloseDialog() {
     setDialog(false);
@@ -133,7 +158,7 @@ function AddSong() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">Cancel</Button>
-          <Button variant="outlined" color="primary">Add Song</Button>
+          <Button onClick={handleAddSong} variant="outlined" color="primary">Add Song</Button>
         </DialogActions>
       </Dialog>
       <TextField 
